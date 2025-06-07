@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+
 // escapeString escapes special characters in a string for shell command usage
 func escapeString(s string) string {
 	// Replace characters that could cause issues in shell commands
@@ -99,18 +100,7 @@ func runFzfSearch() {
 	}()
 
 	// Create output channel for fzf results
-	outputChan := make(chan string)
-	go func() {
-		for selection := range outputChan {
-			if code, exists := codeMap[selection]; exists {
-				info := httpCodesInfo[code]
-				displayCodeWithLipgloss(code, info)
-			} else {
-				// This should not happen, but just in case
-				fmt.Println(selection)
-			}
-		}
-	}()
+	outputChan := make(chan string, 1)
 
 	// Exit function
 	exit := func(code int, err error) {
@@ -163,6 +153,20 @@ func runFzfSearch() {
 
 	// Run fzf
 	code, err := fzf.Run(options)
+	
+	// Process the selected item after fzf exits
+	select {
+	case selection := <-outputChan:
+		if statusCode, exists := codeMap[selection]; exists {
+			info := httpCodesInfo[statusCode]
+			displayCodeWithLipgloss(statusCode, info)
+		} else {
+			fmt.Println(selection)
+		}
+	default:
+		// No selection made (user cancelled)
+	}
+	
 	exit(code, err)
 }
 
