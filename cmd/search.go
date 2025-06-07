@@ -118,7 +118,7 @@ func runFzfSearch() {
 			fmt.Fprintln(os.Stderr, err.Error())
 		}
 		// Don't exit the program, just return from the function
-		if code != 0 {
+		if code != 0 && code != 130 {
 			fmt.Fprintln(os.Stderr, "Error in fuzzy search")
 		}
 	}
