@@ -1,5 +1,7 @@
 package cmd
 
+import "fmt"
+
 // HTTP status codes and their descriptions
 var httpCodes = map[int]string{
 	// 1xx Informational
@@ -78,8 +80,8 @@ var httpCodes = map[int]string{
 // Helper function to look up a specific HTTP status code
 func lookupCode(code int) {
 	if description, exists := httpCodes[code]; exists {
-		println(code, ":", description)
+		fmt.Printf("%d: %s\n", code, description)
 	} else {
-		println("HTTP status code", code, "not found")
+		fmt.Printf("HTTP status code %d not found\n", code)
 	}
 }

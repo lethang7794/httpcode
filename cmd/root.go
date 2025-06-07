@@ -14,6 +14,8 @@ var rootCmd = &cobra.Command{
 	Short: "HTTP Status Code Lookup Tool",
 	Long: `A simple command-line tool for looking up HTTP status codes and their descriptions.
 Complete documentation is available at https://github.com/lethang7794/httpcode`,
+	// This is important - it tells Cobra not to try to validate args against commands
+	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			cmd.Help()
@@ -24,6 +26,7 @@ Complete documentation is available at https://github.com/lethang7794/httpcode`,
 		if code, err := strconv.Atoi(args[0]); err == nil {
 			lookupCode(code)
 		} else {
+			// Only show "unknown command" for non-numeric inputs
 			fmt.Printf("Unknown command: %s\n", args[0])
 			cmd.Help()
 		}
