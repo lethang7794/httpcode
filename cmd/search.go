@@ -135,6 +135,9 @@ func runFzfSearch() {
 	// Add header
 	fzfArgs = append(fzfArgs, "--header=HTTP Status Codes (Press ESC to exit, Enter to select)")
 	
+	// Add header label with program information
+	fzfArgs = append(fzfArgs, "--border-label=httpcode - HTTP Status Code Viewer")
+	
 	// Add preview options for detailed view
 	previewCmd := "echo -e '\\033[1;32mHTTP Status Code:\\033[0m {1} {2}\\n" +
 		"\\033[1;32mClass:\\033[0m            {3}\\n" +
