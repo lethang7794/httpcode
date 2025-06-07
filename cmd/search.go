@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -24,24 +25,35 @@ func init() {
 
 func searchCodes(term string) {
 	term = strings.ToLower(term)
-	found := false
+	var matchedCodes []int
 	
-	fmt.Printf("Search results for \"%s\":\n", term)
-	fmt.Println("---------------------")
+	displayListHeaderWithLipgloss(fmt.Sprintf("Search Results for \"%s\"", term))
 	
+	// Find matching codes
 	for code, info := range httpCodesInfo {
 		searchText := strings.ToLower(info.Description + " " + info.Detail)
 		if strings.Contains(searchText, term) {
-			fmt.Printf("%d: %s\n", code, info.Description)
-			fmt.Printf("   %s\n", truncateText(info.Detail, 80))
-			fmt.Printf("   %s\n\n", info.MDNLink)
-			found = true
+			matchedCodes = append(matchedCodes, code)
 		}
 	}
 	
-	if !found {
-		fmt.Printf("No HTTP status codes found matching \"%s\"\n", term)
+	if len(matchedCodes) == 0 {
+		displayErrorWithLipgloss(fmt.Sprintf("No HTTP status codes found matching \"%s\"", term))
+		return
 	}
+	
+	// Sort matched codes
+	sort.Ints(matchedCodes)
+	
+	// Display search results with enhanced styling
+	for _, code := range matchedCodes {
+		info := httpCodesInfo[code]
+		detail := truncateText(info.Detail, 100)
+		displaySearchResultWithLipgloss(code, info, detail)
+	}
+	
+	// Display summary
+	displaySummaryWithLipgloss(fmt.Sprintf("Found %d result(s)", len(matchedCodes)))
 }
 
 // Helper function to truncate text with ellipsis if it's too long

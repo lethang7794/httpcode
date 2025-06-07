@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -30,30 +31,39 @@ func init() {
 func listCodes(category string) {
 	if category == "" {
 		// List all codes
-		fmt.Println("All HTTP Status Codes:")
-		fmt.Println("---------------------")
+		displayListHeaderWithLipgloss("All HTTP Status Codes")
 		
 		// Group by category
 		for i := 1; i <= 5; i++ {
-			fmt.Printf("\n%dxx - ", i)
+			var categoryName string
 			switch i {
 			case 1:
-				fmt.Println("Informational")
+				categoryName = "Informational"
 			case 2:
-				fmt.Println("Success")
+				categoryName = "Success"
 			case 3:
-				fmt.Println("Redirection")
+				categoryName = "Redirection"
 			case 4:
-				fmt.Println("Client Error")
+				categoryName = "Client Error"
 			case 5:
-				fmt.Println("Server Error")
+				categoryName = "Server Error"
 			}
-			fmt.Println("---------------------")
 			
-			for code, info := range httpCodesInfo {
+			// Display category header
+			displayCategoryHeaderWithLipgloss(i, categoryName)
+			
+			// Get and sort codes for this category
+			var codes []int
+			for code := range httpCodesInfo {
 				if code/100 == i {
-					fmt.Printf("%d: %s\n", code, info.Description)
+					codes = append(codes, code)
 				}
+			}
+			sort.Ints(codes)
+			
+			// Display codes in this category
+			for _, code := range codes {
+				displayCodeListItemWithLipgloss(code, httpCodesInfo[code].Description)
 			}
 		}
 		return
@@ -62,13 +72,13 @@ func listCodes(category string) {
 	// List codes by category
 	category = strings.ToLower(category)
 	if !strings.HasSuffix(category, "xx") || len(category) != 3 {
-		fmt.Println("Invalid category. Use 1xx, 2xx, 3xx, 4xx, or 5xx.")
+		displayErrorWithLipgloss("Invalid category. Use 1xx, 2xx, 3xx, 4xx, or 5xx.")
 		return
 	}
 	
 	prefix := category[0] - '0'
 	if prefix < 1 || prefix > 5 {
-		fmt.Println("Invalid category. Use 1xx, 2xx, 3xx, 4xx, or 5xx.")
+		displayErrorWithLipgloss("Invalid category. Use 1xx, 2xx, 3xx, 4xx, or 5xx.")
 		return
 	}
 	
@@ -86,18 +96,25 @@ func listCodes(category string) {
 		categoryName = "Server Error"
 	}
 	
-	fmt.Printf("%dxx - %s:\n", prefix, categoryName)
-	fmt.Println("---------------------")
+	displayListHeaderWithLipgloss(fmt.Sprintf("%dxx - %s", prefix, categoryName))
 	
-	found := false
-	for code, info := range httpCodesInfo {
+	// Get and sort codes for this category
+	var codes []int
+	for code := range httpCodesInfo {
 		if code/100 == int(prefix) {
-			fmt.Printf("%d: %s\n", code, info.Description)
-			found = true
+			codes = append(codes, code)
 		}
 	}
 	
-	if !found {
-		fmt.Printf("No HTTP status codes found in category %s\n", category)
+	if len(codes) == 0 {
+		displayErrorWithLipgloss(fmt.Sprintf("No HTTP status codes found in category %s", category))
+		return
+	}
+	
+	sort.Ints(codes)
+	
+	// Display codes in this category
+	for _, code := range codes {
+		displayCodeListItemWithLipgloss(code, httpCodesInfo[code].Description)
 	}
 }

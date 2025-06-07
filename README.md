@@ -1,6 +1,15 @@
 # HTTP Code CLI Tool
 
-A simple command-line tool for looking up HTTP status codes and their descriptions, built with Cobra.
+A beautiful command-line tool for looking up HTTP status codes and their descriptions, built with Cobra and styled with Lipgloss.
+
+## Features
+
+✨ **Beautiful Terminal UI** - Styled with [Lipgloss](https://github.com/charmbracelet/lipgloss) for a modern, colorful interface
+📋 **Comprehensive Database** - Complete HTTP status code information with detailed descriptions
+🔍 **Multiple Search Options** - Look up by code, search by description, or browse by category
+🎯 **Interactive Fuzzy Search** - Built-in fuzzy search with fzf integration
+🌈 **Color-Coded Categories** - Different colors for each HTTP status code category (1xx-5xx)
+📖 **MDN Documentation Links** - Direct links to official documentation for each status code
 
 ## Installation
 
@@ -30,16 +39,32 @@ httpcode fzf-search      - Interactive fuzzy search with detailed preview
 httpcode help            - Show help message
 ```
 
-## Features
+## Beautiful Output
 
-### Detailed Information
+The tool uses Lipgloss to provide beautiful, color-coded output:
+
+- 🔵 **1xx (Informational)** - Blue styling
+- 🟢 **2xx (Success)** - Green styling  
+- 🟠 **3xx (Redirection)** - Orange styling
+- 🔴 **4xx (Client Error)** - Red styling
+- 🟣 **5xx (Server Error)** - Purple styling
+
+Each status code is displayed with:
+- Styled header with code and description
+- Category badge
+- Detailed explanation in a bordered box
+- Clickable MDN documentation link
+- Beautiful separators and formatting
+
+## Detailed Information
 
 For each HTTP status code, the tool provides:
 - Short description
 - Detailed explanation
 - Link to MDN documentation
+- Color-coded category classification
 
-### Fuzzy Search
+## Fuzzy Search
 
 The tool includes built-in interactive fuzzy search functionality:
 
@@ -81,10 +106,10 @@ To install completions permanently, see the output of `httpcode completion --hel
 ## Examples
 
 ```bash
-# Look up a specific status code
+# Look up a specific status code with beautiful styling
 httpcode 404
 
-# List all 4xx (client error) status codes
+# List all 4xx (client error) status codes with color coding
 httpcode list 4xx
 
 # Search for status codes containing "not found" in their description
@@ -92,6 +117,24 @@ httpcode search "not found"
 
 # Interactive fuzzy search
 httpcode fzf
+
+# List all codes with beautiful category headers
+httpcode list
+```
+
+## Dependencies
+
+- [Cobra](https://github.com/spf13/cobra) - CLI framework
+- [Lipgloss](https://github.com/charmbracelet/lipgloss) - Terminal styling
+- [fzf](https://github.com/junegunn/fzf) - Fuzzy search functionality
+
+## Demo
+
+Run the demo script to see the beautiful styling in action:
+
+```bash
+chmod +x demo.sh
+./demo.sh
 ```
 
 ## License

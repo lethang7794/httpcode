@@ -344,10 +344,8 @@ var httpCodes = func() map[int]string {
 // Helper function to look up a specific HTTP status code
 func lookupCode(code int) {
 	if info, exists := httpCodesInfo[code]; exists {
-		fmt.Printf("%d: %s\n", code, info.Description)
-		fmt.Printf("\nDetail: %s\n", info.Detail)
-		fmt.Printf("\nMDN Documentation: %s\n", info.MDNLink)
+		displayCodeWithLipgloss(code, info)
 	} else {
-		fmt.Printf("HTTP status code %d not found\n", code)
+		displayErrorWithLipgloss(fmt.Sprintf("HTTP status code %d not found", code))
 	}
 }
