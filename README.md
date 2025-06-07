@@ -30,7 +30,16 @@ httpcode fzf-search      - Interactive fuzzy search with detailed preview
 httpcode help            - Show help message
 ```
 
-## Fuzzy Search
+## Features
+
+### Detailed Information
+
+For each HTTP status code, the tool provides:
+- Short description
+- Detailed explanation
+- Link to MDN documentation
+
+### Fuzzy Search
 
 The tool includes built-in interactive fuzzy search functionality:
 

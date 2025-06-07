@@ -50,9 +50,9 @@ func listCodes(category string) {
 			}
 			fmt.Println("---------------------")
 			
-			for code, desc := range httpCodes {
+			for code, info := range httpCodesInfo {
 				if code/100 == i {
-					fmt.Printf("%d: %s\n", code, desc)
+					fmt.Printf("%d: %s\n", code, info.Description)
 				}
 			}
 		}
@@ -90,9 +90,9 @@ func listCodes(category string) {
 	fmt.Println("---------------------")
 	
 	found := false
-	for code, desc := range httpCodes {
+	for code, info := range httpCodesInfo {
 		if code/100 == int(prefix) {
-			fmt.Printf("%d: %s\n", code, desc)
+			fmt.Printf("%d: %s\n", code, info.Description)
 			found = true
 		}
 	}

@@ -36,14 +36,14 @@ func runFzfSearch(withPreview bool) {
 
 	// Sort codes for consistent display
 	var codes []int
-	for code := range httpCodes {
+	for code := range httpCodesInfo {
 		codes = append(codes, code)
 	}
 	sort.Ints(codes)
 
 	// Format items for display
 	for _, code := range codes {
-		desc := httpCodes[code]
+		info := httpCodesInfo[code]
 		category := ""
 		switch code / 100 {
 		case 1:
@@ -60,10 +60,15 @@ func runFzfSearch(withPreview bool) {
 
 		var item string
 		if withPreview {
-			// Include category for preview mode
-			item = fmt.Sprintf("%d\t%s\t%s", code, desc, category)
+			// Include all information for preview mode
+			item = fmt.Sprintf("%d\t%s\t%s\t%s\t%s", 
+				code, 
+				info.Description, 
+				category, 
+				info.Detail, 
+				info.MDNLink)
 		} else {
-			item = fmt.Sprintf("%d: %s", code, desc)
+			item = fmt.Sprintf("%d: %s", code, info.Description)
 		}
 		
 		items = append(items, item)
@@ -84,7 +89,10 @@ func runFzfSearch(withPreview bool) {
 	go func() {
 		for selection := range outputChan {
 			if code, exists := codeMap[selection]; exists {
-				fmt.Printf("%d: %s\n", code, httpCodes[code])
+				info := httpCodesInfo[code]
+				fmt.Printf("%d: %s\n", code, info.Description)
+				fmt.Printf("\nDetail: %s\n", info.Detail)
+				fmt.Printf("\nMDN Documentation: %s\n", info.MDNLink)
 			} else {
 				// This should not happen, but just in case
 				fmt.Println(selection)
@@ -117,12 +125,17 @@ func runFzfSearch(withPreview bool) {
 	
 	if withPreview {
 		// Add preview options for detailed view
-		previewCmd := "echo -e '\\033[1;32mHTTP Status Code:\\033[0m {1}\\n\\033[1;32mDescription:\\033[0m {2}\\n\\033[1;32mCategory:\\033[0m {3}\\n'"
+		previewCmd := "echo -e '\\033[1;32mHTTP Status Code:\\033[0m {1}\\n\\n" +
+			"\\033[1;32mDescription:\\033[0m {2}\\n\\n" +
+			"\\033[1;32mCategory:\\033[0m {3}\\n\\n" +
+			"\\033[1;32mDetails:\\033[0m\\n{4}\\n\\n" +
+			"\\033[1;32mMDN Documentation:\\033[0m\\n{5}'"
+		
 		fzfArgs = append(fzfArgs, 
 			"--delimiter=\\t",
 			"--with-nth=1,2",
 			"--preview=" + previewCmd,
-			"--preview-window=right:40%")
+			"--preview-window=right:50%:wrap")
 	}
 
 	// Parse options
