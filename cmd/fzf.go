@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 
 	fzf "github.com/junegunn/fzf/src"
 	"github.com/spf13/cobra"
@@ -27,6 +28,30 @@ var fzfSearchCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		runFzfSearch(true)
 	},
+}
+
+// escapeString escapes special characters in a string for shell command usage
+func escapeString(s string) string {
+	// Replace characters that could cause issues in shell commands
+	s = strings.ReplaceAll(s, "\\", "\\\\")
+	s = strings.ReplaceAll(s, "'", "")  // Remove single quotes entirely
+	s = strings.ReplaceAll(s, "\"", "")  // Remove double quotes entirely
+	s = strings.ReplaceAll(s, "`", "")  // Remove backticks entirely
+	s = strings.ReplaceAll(s, "$", "\\$")
+	s = strings.ReplaceAll(s, "!", "\\!")
+	s = strings.ReplaceAll(s, "&", "\\&")
+	s = strings.ReplaceAll(s, "|", "\\|")
+	s = strings.ReplaceAll(s, ">", "\\>")
+	s = strings.ReplaceAll(s, "<", "\\<")
+	s = strings.ReplaceAll(s, "(", "\\(")
+	s = strings.ReplaceAll(s, ")", "\\)")
+	s = strings.ReplaceAll(s, "[", "\\[")
+	s = strings.ReplaceAll(s, "]", "\\]")
+	s = strings.ReplaceAll(s, "{", "\\{")
+	s = strings.ReplaceAll(s, "}", "\\}")
+	s = strings.ReplaceAll(s, ";", "\\;")
+	s = strings.ReplaceAll(s, "\n", " ") // Replace newlines with spaces
+	return s
 }
 
 func runFzfSearch(withPreview bool) {
@@ -61,12 +86,16 @@ func runFzfSearch(withPreview bool) {
 		var item string
 		if withPreview {
 			// Include all information for preview mode
+			// Escape special characters in the detail text
+			escapedDetail := escapeString(info.Detail)
+			escapedLink := escapeString(info.MDNLink)
+			
 			item = fmt.Sprintf("%d\t%s\t%s\t%s\t%s", 
 				code, 
 				info.Description, 
 				category, 
-				info.Detail, 
-				info.MDNLink)
+				escapedDetail, 
+				escapedLink)
 		} else {
 			item = fmt.Sprintf("%d: %s", code, info.Description)
 		}
