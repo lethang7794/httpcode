@@ -29,9 +29,9 @@ echo "📋 Listing 4xx codes:"
 ./httpcode list 4xx
 echo
 
-# Demo search functionality
-echo "📋 Searching for 'not found':"
-./httpcode search "not found"
+# Demo fuzzy search functionality
+echo "📋 Fuzzy search available with:"
+echo "   ./httpcode fzf"
 echo
 
 echo "✨ Demo complete! Your HTTP code tool now has beautiful styling with Lipgloss!"

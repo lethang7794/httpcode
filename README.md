@@ -6,8 +6,8 @@ A beautiful command-line tool for looking up HTTP status codes and their descrip
 
 ✨ **Beautiful Terminal UI** - Styled with [Lipgloss](https://github.com/charmbracelet/lipgloss) for a modern, colorful interface
 📋 **Comprehensive Database** - Complete HTTP status code information with detailed descriptions
-🔍 **Multiple Search Options** - Look up by code, search by description, or browse by category
-🎯 **Interactive Fuzzy Search** - Built-in fuzzy search with fzf integration
+🔍 **Multiple Lookup Options** - Look up by code or browse by category
+🎯 **Interactive Fuzzy Search** - Built-in fuzzy search with fzf integration and detailed preview
 🌈 **Color-Coded Categories** - Different colors for each HTTP status code category (1xx-5xx)
 📖 **MDN Documentation Links** - Direct links to official documentation for each status code
 
@@ -33,9 +33,7 @@ sudo mv httpcode /usr/local/bin/
 httpcode <code>          - Look up a specific HTTP status code
 httpcode list            - List all HTTP status codes
 httpcode list <category> - List codes by category (1xx, 2xx, 3xx, 4xx, 5xx)
-httpcode search <term>   - Search for codes by description
-httpcode fzf             - Interactive fuzzy search using fzf
-httpcode fzf-search      - Interactive fuzzy search with detailed preview
+httpcode fzf             - Interactive fuzzy search with detailed preview
 httpcode help            - Show help message
 ```
 
@@ -69,18 +67,15 @@ For each HTTP status code, the tool provides:
 The tool includes built-in interactive fuzzy search functionality:
 
 ```bash
-# Basic fuzzy search
+# Interactive fuzzy search with detailed preview
 httpcode fzf
-
-# Fuzzy search with detailed preview
-httpcode fzf-search
 ```
 
 The fuzzy search interface allows you to:
 - Type to filter HTTP status codes
 - Use arrow keys to navigate
 - Press Enter to select a code
-- View detailed information in the preview pane (with fzf-search)
+- View detailed information in the preview pane
 - Press Ctrl+C or Esc to exit
 
 ## Shell Completion
@@ -112,10 +107,7 @@ httpcode 404
 # List all 4xx (client error) status codes with color coding
 httpcode list 4xx
 
-# Search for status codes containing "not found" in their description
-httpcode search "not found"
-
-# Interactive fuzzy search
+# Interactive fuzzy search with preview
 httpcode fzf
 
 # List all codes with beautiful category headers

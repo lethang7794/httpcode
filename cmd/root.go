@@ -18,7 +18,7 @@ Complete documentation is available at https://github.com/lethang7794/httpcode`,
 	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			cmd.Help()
+			runFzfSearch()
 			return
 		}
 

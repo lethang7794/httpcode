@@ -10,26 +10,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// fzfCmd represents the fzf command
-var fzfCmd = &cobra.Command{
-	Use:   "fzf",
-	Short: "Interactive fuzzy search for HTTP status codes",
-	Long:  `Use fuzzy search to interactively search for HTTP status codes.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		runFzfSearch(false)
-	},
-}
-
-// fzfSearchCmd represents the fzf-search command
-var fzfSearchCmd = &cobra.Command{
-	Use:   "fzf-search",
-	Short: "Interactive fuzzy search with detailed preview",
-	Long:  `Use fuzzy search to interactively search for HTTP status codes with detailed preview.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		runFzfSearch(true)
-	},
-}
-
 // escapeString escapes special characters in a string for shell command usage
 func escapeString(s string) string {
 	// Replace characters that could cause issues in shell commands
@@ -54,7 +34,17 @@ func escapeString(s string) string {
 	return s
 }
 
-func runFzfSearch(withPreview bool) {
+// fzfCmd represents the fzf command
+var fzfCmd = &cobra.Command{
+	Use:   "fzf",
+	Short: "Interactive fuzzy search for HTTP status codes",
+	Long:  `Use fuzzy search to interactively search for HTTP status codes.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		runFzfSearch()
+	},
+}
+
+func runFzfSearch() {
 	// Prepare data for fuzzy search
 	var items []string
 	var codeMap = make(map[string]int)
@@ -66,7 +56,7 @@ func runFzfSearch(withPreview bool) {
 	}
 	sort.Ints(codes)
 
-	// Format items for display
+	// Format items for display with preview information
 	for _, code := range codes {
 		info := httpCodesInfo[code]
 		category := ""
@@ -83,22 +73,17 @@ func runFzfSearch(withPreview bool) {
 			category = "Server Error"
 		}
 
-		var item string
-		if withPreview {
-			// Include all information for preview mode
-			// Escape special characters in the detail text
-			escapedDetail := escapeString(info.Detail)
-			escapedLink := escapeString(info.MDNLink)
-			
-			item = fmt.Sprintf("%d\t%s\t%s\t%s\t%s", 
-				code, 
-				info.Description, 
-				category, 
-				escapedDetail, 
-				escapedLink)
-		} else {
-			item = fmt.Sprintf("%d: %s", code, info.Description)
-		}
+		// Include all information for preview mode
+		// Escape special characters in the detail text
+		escapedDetail := escapeString(info.Detail)
+		escapedLink := escapeString(info.MDNLink)
+		
+		item := fmt.Sprintf("%d\t%s\t%s\t%s\t%s", 
+			code, 
+			info.Description, 
+			category, 
+			escapedDetail, 
+			escapedLink)
 		
 		items = append(items, item)
 		codeMap[item] = code
@@ -119,9 +104,7 @@ func runFzfSearch(withPreview bool) {
 		for selection := range outputChan {
 			if code, exists := codeMap[selection]; exists {
 				info := httpCodesInfo[code]
-				fmt.Printf("%d: %s\n", code, info.Description)
-				fmt.Printf("\nDetail: %s\n", info.Detail)
-				fmt.Printf("\nMDN Documentation: %s\n", info.MDNLink)
+				displayCodeWithLipgloss(code, info)
 			} else {
 				// This should not happen, but just in case
 				fmt.Println(selection)
@@ -152,20 +135,18 @@ func runFzfSearch(withPreview bool) {
 	// Add header
 	fzfArgs = append(fzfArgs, "--header=HTTP Status Codes (Press ESC to exit, Enter to select)")
 	
-	if withPreview {
-		// Add preview options for detailed view
-		previewCmd := "echo -e '\\033[1;32mHTTP Status Code:\\033[0m {1}\\n\\n" +
-			"\\033[1;32mDescription:\\033[0m {2}\\n\\n" +
-			"\\033[1;32mCategory:\\033[0m {3}\\n\\n" +
-			"\\033[1;32mDetails:\\033[0m\\n{4}\\n\\n" +
-			"\\033[1;32mMDN Documentation:\\033[0m\\n{5}'"
-		
-		fzfArgs = append(fzfArgs, 
-			"--delimiter=\\t",
-			"--with-nth=1,2",
-			"--preview=" + previewCmd,
-			"--preview-window=right:50%:wrap")
-	}
+	// Add preview options for detailed view
+	previewCmd := "echo -e '\\033[1;32mHTTP Status Code:\\033[0m {1}\\n\\n" +
+		"\\033[1;32mDescription:\\033[0m {2}\\n\\n" +
+		"\\033[1;32mCategory:\\033[0m {3}\\n\\n" +
+		"\\033[1;32mDetails:\\033[0m\\n{4}\\n\\n" +
+		"\\033[1;32mMDN Documentation:\\033[0m\\n{5}'"
+	
+	fzfArgs = append(fzfArgs, 
+		"--delimiter=\\t",
+		"--with-nth=1,2",
+		"--preview=" + previewCmd,
+		"--preview-window=right:50%:wrap")
 
 	// Parse options
 	options, err := fzf.ParseOptions(false, fzfArgs)
@@ -185,5 +166,4 @@ func runFzfSearch(withPreview bool) {
 
 func init() {
 	rootCmd.AddCommand(fzfCmd)
-	rootCmd.AddCommand(fzfSearchCmd)
 }

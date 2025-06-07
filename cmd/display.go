@@ -210,31 +210,6 @@ func displayCategoryHeaderWithLipgloss(category int, name string) {
 	fmt.Println(header)
 }
 
-// displaySearchResultWithLipgloss displays a search result item
-func displaySearchResultWithLipgloss(code int, info HTTPCodeInfo, detail string) {
-	color := getStatusCodeColor(code)
-	
-	// Display code and description in one line
-	codeHeader := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(color).
-		Render(fmt.Sprintf("%d: %s", code, info.Description))
-	fmt.Println(codeHeader)
-	
-	// Display truncated detail in one line
-	detailText := lipgloss.NewStyle().
-		Foreground(mutedColor).
-		Render(fmt.Sprintf("  📝 %s", detail))
-	fmt.Println(detailText)
-	
-	// Display MDN link in one line
-	linkText := lipgloss.NewStyle().
-		Foreground(linkColor).
-		Render(fmt.Sprintf("  🔗 %s", info.MDNLink))
-	fmt.Println(linkText)
-	fmt.Println()
-}
-
 // displaySummaryWithLipgloss displays a summary message
 func displaySummaryWithLipgloss(message string) {
 	summary := lipgloss.NewStyle().
