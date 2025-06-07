@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -47,7 +46,6 @@ var (
 	descriptionStyle = lipgloss.NewStyle().
 		Padding(1, 2).
 		Margin(1, 0).
-		Border(lipgloss.RoundedBorder()).
 		Width(80)
 	
 	// Link style
@@ -145,57 +143,59 @@ func displayCodeWithLipgloss(code int, info HTTPCodeInfo) {
 	color := getStatusCodeColor(code)
 	category := getStatusCodeCategory(code)
 	
-	// Display the main header with status code
-	header := headerStyle.
+	// Display the status code and description in one line
+	header := lipgloss.NewStyle().
+		Bold(true).
 		Foreground(color).
-		BorderForeground(color).
-		Render(fmt.Sprintf("HTTP %d: %s", code, info.Description))
+		Render(fmt.Sprintf("           HTTP %d %s", code, info.Description))
 	fmt.Println(header)
 	
-	// Display category badge
-	badge := badgeStyle.
-		Background(color).
-		Render(fmt.Sprintf("📋 %s", category))
+	// Display category in one line
+	badge := lipgloss.NewStyle().
+		Foreground(color).
+		Render(fmt.Sprintf("📋 Class:       %s", category))
 	fmt.Println(badge)
 	
-	// Display detailed description
-	description := descriptionStyle.
-		Foreground(textColor).
-		BorderForeground(color).
-		Render(fmt.Sprintf("📝 Description:\n\n%s", info.Detail))
+	// Display detailed description in one line
+	description := lipgloss.NewStyle().
+		Render(fmt.Sprintf("📝 Description: %s", info.Detail))
 	fmt.Println(description)
 	
-	// Display MDN link
-	link := linkStyle.
-		Render(fmt.Sprintf("🔗 MDN Documentation:\n%s", info.MDNLink))
+	// Display MDN link in one line
+	link := lipgloss.NewStyle().
+		Foreground(linkColor).
+		Render(fmt.Sprintf("🔗 Docs:        %s", info.MDNLink))
 	fmt.Println(link)
 	
-	// Add a separator
-	separator := separatorStyle.
-		Foreground(color).
-		Render(strings.Repeat("─", 60))
-	fmt.Println(separator)
+	// Add a simple separator
+	fmt.Println()
 }
 
 // displayErrorWithLipgloss displays error messages using Lipgloss styling
 func displayErrorWithLipgloss(message string) {
-	error := errorStyle.Render(fmt.Sprintf("❌ %s", message))
+	error := lipgloss.NewStyle().
+		Foreground(clientErrorColor).
+		Render(fmt.Sprintf("❌ %s", message))
 	fmt.Println(error)
 }
 
 // displayListHeaderWithLipgloss displays a styled header for list commands
 func displayListHeaderWithLipgloss(title string) {
-	header := listHeaderStyle.Render(fmt.Sprintf("📋 %s", title))
+	header := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(textColor).
+		Render(fmt.Sprintf("📋 %s", title))
 	fmt.Println(header)
+	fmt.Println()
 }
 
 // displayCodeListItemWithLipgloss displays a single code item in a list
 func displayCodeListItemWithLipgloss(code int, description string) {
 	color := getStatusCodeColor(code)
 	
-	item := listItemStyle.
+	item := lipgloss.NewStyle().
 		Foreground(color).
-		Render(fmt.Sprintf("• %d: %s", code, description))
+		Render(fmt.Sprintf("  %d: %s", code, description))
 	fmt.Println(item)
 }
 
@@ -203,9 +203,10 @@ func displayCodeListItemWithLipgloss(code int, description string) {
 func displayCategoryHeaderWithLipgloss(category int, name string) {
 	color := getStatusCodeColor(category * 100)
 	
-	header := categoryHeaderStyle.
+	header := lipgloss.NewStyle().
+		Bold(true).
 		Foreground(color).
-		Render(fmt.Sprintf("\n%dxx - %s", category, name))
+		Render(fmt.Sprintf("%dxx - %s", category, name))
 	fmt.Println(header)
 }
 
@@ -213,33 +214,31 @@ func displayCategoryHeaderWithLipgloss(category int, name string) {
 func displaySearchResultWithLipgloss(code int, info HTTPCodeInfo, detail string) {
 	color := getStatusCodeColor(code)
 	
-	// Display code and description
+	// Display code and description in one line
 	codeHeader := lipgloss.NewStyle().
 		Bold(true).
 		Foreground(color).
-		Margin(1, 0, 0, 0).
 		Render(fmt.Sprintf("%d: %s", code, info.Description))
 	fmt.Println(codeHeader)
 	
-	// Display truncated detail
+	// Display truncated detail in one line
 	detailText := lipgloss.NewStyle().
 		Foreground(mutedColor).
-		Margin(0, 0, 0, 2).
-		Padding(0, 2).
-		Render(fmt.Sprintf("📝 %s", detail))
+		Render(fmt.Sprintf("  📝 %s", detail))
 	fmt.Println(detailText)
 	
-	// Display MDN link
+	// Display MDN link in one line
 	linkText := lipgloss.NewStyle().
 		Foreground(linkColor).
-		Margin(0, 0, 1, 2).
-		Padding(0, 2).
-		Render(fmt.Sprintf("🔗 %s", info.MDNLink))
+		Render(fmt.Sprintf("  🔗 %s", info.MDNLink))
 	fmt.Println(linkText)
+	fmt.Println()
 }
 
 // displaySummaryWithLipgloss displays a summary message
 func displaySummaryWithLipgloss(message string) {
-	summary := summaryStyle.Render(message)
+	summary := lipgloss.NewStyle().
+		Foreground(textColor).
+		Render(message)
 	fmt.Println(summary)
 }
