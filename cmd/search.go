@@ -34,11 +34,11 @@ func escapeString(s string) string {
 	return s
 }
 
-// fzfCmd represents the fzf command
-var fzfCmd = &cobra.Command{
-	Use:   "fzf",
-	Short: "Interactive fuzzy search for HTTP status codes",
-	Long:  `Use fuzzy search to interactively search for HTTP status codes.`,
+// searchCmd represents the search command
+var searchCmd = &cobra.Command{
+	Use:   "search",
+	Short: "Interactive fuzzy search with detailed preview",
+	Long:  `Use fuzzy search to interactively search for HTTP status codes with detailed preview.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		runFzfSearch()
 	},
@@ -130,23 +130,22 @@ func runFzfSearch() {
 	fzfArgs = append(fzfArgs, "--ansi", "--reverse", "--border")
 	
 	// Set height
-	fzfArgs = append(fzfArgs, "--height=50%")
+	fzfArgs = append(fzfArgs, "--height=80%")
 	
 	// Add header
 	fzfArgs = append(fzfArgs, "--header=HTTP Status Codes (Press ESC to exit, Enter to select)")
 	
 	// Add preview options for detailed view
-	previewCmd := "echo -e '\\033[1;32mHTTP Status Code:\\033[0m {1}\\n\\n" +
-		"\\033[1;32mDescription:\\033[0m {2}\\n\\n" +
-		"\\033[1;32mCategory:\\033[0m {3}\\n\\n" +
-		"\\033[1;32mDetails:\\033[0m\\n{4}\\n\\n" +
-		"\\033[1;32mMDN Documentation:\\033[0m\\n{5}'"
+	previewCmd := "echo -e '\\033[1;32mHTTP Status Code:\\033[0m {1} {2}\\n" +
+		"\\033[1;32mClass:\\033[0m            {3}\\n" +
+		"\\033[1;32mDetails:\\033[0m\\n{4}\\n" +
+		"\\033[1;32mMDN Docs:\\033[0m\\n{5}'"
 	
 	fzfArgs = append(fzfArgs, 
 		"--delimiter=\\t",
 		"--with-nth=1,2",
 		"--preview=" + previewCmd,
-		"--preview-window=right:50%:wrap")
+		"--preview-window=right:60%:wrap")
 
 	// Parse options
 	options, err := fzf.ParseOptions(false, fzfArgs)
@@ -165,5 +164,5 @@ func runFzfSearch() {
 }
 
 func init() {
-	rootCmd.AddCommand(fzfCmd)
+	rootCmd.AddCommand(searchCmd)
 }

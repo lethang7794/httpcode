@@ -33,7 +33,7 @@ sudo mv httpcode /usr/local/bin/
 httpcode <code>          - Look up a specific HTTP status code
 httpcode list            - List all HTTP status codes
 httpcode list <category> - List codes by category (1xx, 2xx, 3xx, 4xx, 5xx)
-httpcode fzf             - Interactive fuzzy search with detailed preview
+httpcode search          - Interactive fuzzy search with detailed preview
 httpcode help            - Show help message
 ```
 
@@ -68,7 +68,7 @@ The tool includes built-in interactive fuzzy search functionality:
 
 ```bash
 # Interactive fuzzy search with detailed preview
-httpcode fzf
+httpcode search
 ```
 
 The fuzzy search interface allows you to:
@@ -108,7 +108,7 @@ httpcode 404
 httpcode list 4xx
 
 # Interactive fuzzy search with preview
-httpcode fzf
+httpcode search
 
 # List all codes with beautiful category headers
 httpcode list

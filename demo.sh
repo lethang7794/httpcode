@@ -31,7 +31,7 @@ echo
 
 # Demo fuzzy search functionality
 echo "📋 Fuzzy search available with:"
-echo "   ./httpcode fzf"
+echo "   ./httpcode search"
 echo
 
 echo "✨ Demo complete! Your HTTP code tool now has beautiful styling with Lipgloss!"
