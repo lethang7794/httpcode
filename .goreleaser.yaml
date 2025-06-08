@@ -88,7 +88,7 @@ brews:
     homepage: https://github.com/lethang7794/httpcode
     description: "Minimal HTTP status code lookup tool support fuzzy search"
     license: MIT
-    post_install: generate_completions_from_executable(bin/"httpcode", "completion")
+    extra_install: generate_completions_from_executable(bin/"httpcode", "completion")
     test: |
       system "#{bin}/httpcode --help"
       system "#{bin}/httpcode version"

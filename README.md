@@ -6,16 +6,45 @@ A beautiful command-line tool for looking up HTTP status codes and their descrip
 
 ## Features
 
-✨ **Beautiful Terminal UI** - Styled with [Lipgloss](https://github.com/charmbracelet/lipgloss) for a modern, colorful interface
-📋 **Comprehensive Database** - Complete HTTP status code information with detailed descriptions
-🔍 **Multiple Lookup Options** - Look up by code or browse by category
-🎯 **Interactive Fuzzy Search** - Built-in fuzzy search with fzf integration and detailed preview
-🌈 **Color-Coded Categories** - Different colors for each HTTP status code category (1xx-5xx)
-📖 **MDN Documentation Links** - Direct links to official documentation for each status code
+- ✨ **Beautiful Terminal UI** - Styled with [Lipgloss](https://github.com/charmbracelet/lipgloss) for a modern, colorful interface
+- 📋 **Comprehensive Database** - Complete HTTP status code information with detailed descriptions
+- 🔍 **Multiple Lookup Options** - Look up by code or browse by category
+- 🎯 **Interactive Fuzzy Search** - Built-in fuzzy search with fzf integration and detailed preview
+- 🌈 **Color-Coded Categories** - Different colors for each HTTP status code category (1xx-5xx)
+- 📖 **MDN Documentation Links** - Direct links to official documentation for each status code
 
 ## Installation
 
-First, make sure you have Go installed on your system. Then, you can install the tool by running:
+### Homebrew (Mac & Linux)
+
+```bash
+# Add the tap
+brew tap lethang7794/tap
+
+# Install httpcode
+brew install httpcode
+
+# Verify installation
+httpcode --help
+```
+
+### Go Install
+
+```bash
+# Install latest version
+go install github.com/lethang7794/httpcode@latest
+
+# Install specific version
+go install github.com/lethang7794/httpcode@v1.0.0
+```
+
+### Download Binary
+
+Download the appropriate binary for your platform from the [latest release](https://github.com/lethang7794/httpcode/releases/latest).
+
+### Build from Source
+
+First, make sure you have Go installed on your system. Then, you can build the tool by running:
 
 ```bash
 # Clone the repository
@@ -47,7 +76,7 @@ httpcode help            - Show help message
 The tool uses Lipgloss to provide beautiful, color-coded output:
 
 - 🔵 **1xx (Informational)** - Blue styling
-- 🟢 **2xx (Success)** - Green styling  
+- 🟢 **2xx (Success)** - Green styling
 - 🟠 **3xx (Redirection)** - Orange styling
 - 🔴 **4xx (Client Error)** - Red styling
 - 🟣 **5xx (Server Error)** - Purple styling
