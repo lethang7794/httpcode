@@ -126,20 +126,37 @@ httpcode list
 
 ## CI/CD and Releases
 
-The project uses GitHub Actions for continuous integration and GoReleaser for automated releases:
+The project uses a unified GitHub Actions workflow for continuous integration and automated releases:
 
-### Workflows
+### Workflow
 
-- **CI Workflow** (`.github/workflows/ci.yml`) - Runs on every push and PR
-  - Tests on Go 1.19, 1.20, and 1.21
-  - Generates coverage reports
-  - Uploads coverage to Codecov
+- **CI/CD Pipeline** (`.github/workflows/ci-cd.yml`) - Single workflow handling everything
+  - **On Pull Requests**: Runs tests only
+  - **On Main Branch Push**: Full pipeline (test → tag → release)
+  - **Matrix Testing**: Go 1.19, 1.20, and 1.21
+  - **Coverage Reports**: Uploaded to Codecov
+  - **GoReleaser Integration**: Automated building and releasing
 
-- **Tag Workflow** (`.github/workflows/tag.yml`) - Runs on main branch pushes
-  - Runs tests before tagging
-  - Automatically determines version bump based on commit messages
-  - Creates semantic version tags
-  - GoReleaser handles building and releasing
+### Pipeline Flow
+
+```
+1. 🧪 Run Tests (parallel on 3 Go versions)
+   ├─ If tests fail → Stop pipeline
+   └─ If tests pass → Continue
+
+2. 🏷️ Create Tag (only on main branch)
+   ├─ Analyze commits since last tag
+   ├─ Determine version bump (major/minor/patch)
+   ├─ Calculate new version
+   ├─ Create and push Git tag
+   └─ If tag creation fails → Stop pipeline
+
+3. 🚀 Run GoReleaser (only if tag was created)
+   ├─ Build cross-platform binaries
+   ├─ Create GitHub release
+   ├─ Upload assets
+   └─ Generate changelog
+```
 
 ### Semantic Versioning
 
@@ -153,10 +170,18 @@ Version bumps are determined by commit message prefixes:
 ### Release Process
 
 1. **Commit with conventional message**: `feat: add new search feature`
-2. **Push to main**: Triggers tag workflow
-3. **Tests run**: Ensures code quality
-4. **Tag created**: Based on semantic versioning
-5. **GoReleaser triggered**: Builds and releases automatically
+2. **Push to main**: Triggers unified CI/CD pipeline
+3. **Tests run**: Ensures code quality across Go versions
+4. **Tag created**: Based on semantic versioning (e.g., v1.1.0)
+5. **GoReleaser runs**: Builds and releases automatically
+
+### Release Assets
+
+Each release includes:
+- Cross-platform binaries (Linux, macOS, Windows - amd64, arm64)
+- Archives (tar.gz, zip)
+- Checksums for verification
+- Auto-generated changelog
 
 ### Contributing
 

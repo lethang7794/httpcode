@@ -94,13 +94,53 @@ test: add tests for list command
 - Maintain or improve test coverage
 - Test on multiple Go versions (1.19, 1.20, 1.21)
 
+## CI/CD Pipeline
+
+The project uses a unified GitHub Actions workflow:
+
+### For Pull Requests
+- **Tests only**: Runs on Go 1.19, 1.20, 1.21
+- **Coverage**: Reports uploaded to Codecov
+- **Must pass**: Before merging
+
+### For Main Branch Pushes
+- **Full pipeline**: Test → Tag → Release
+- **Automatic versioning**: Based on commit messages
+- **GoReleaser**: Builds cross-platform binaries
+- **GitHub Release**: Created automatically
+
+### Pipeline Flow
+```
+1. Tests run on multiple Go versions
+2. If tests pass and on main branch:
+   - Analyze commits for version bump
+   - Create semantic version tag
+   - Run GoReleaser for release
+```
+
 ## Release Process
 
-Releases are automated based on commit messages:
+Releases are fully automated:
 
-- Push to `main` branch triggers the release workflow
-- Version is automatically determined from commit messages
-- GitHub release is created with binaries for multiple platforms
+- **Push to main** with conventional commits
+- **Pipeline determines** version bump automatically
+- **Tag created** and pushed to repository
+- **GoReleaser builds** cross-platform binaries
+- **GitHub release** created with assets
+
+### Example Release Flow
+```bash
+# Your changes
+git commit -m "feat: add interactive search"
+git push origin main
+
+# Automated result:
+# 1. Tests pass ✅
+# 2. Version bumped to v1.1.0 (feat = minor)
+# 3. Tag v1.1.0 created and pushed
+# 4. GoReleaser builds binaries
+# 5. GitHub release created
+```
 
 ## Questions?
 
