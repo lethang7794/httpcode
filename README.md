@@ -124,6 +124,30 @@ httpcode search
 httpcode list
 ```
 
+## Testing
+
+The project includes comprehensive tests for all subcommands and functionality:
+
+```bash
+# Run all tests
+go test ./cmd/...
+
+# Run tests with coverage
+go test -cover ./cmd/...
+
+# Run the test suite with detailed output
+chmod +x run_tests.sh
+./run_tests.sh
+```
+
+### Test Coverage
+
+- **Root Command Tests** (`cmd/root_test.go`) - Tests argument parsing and code lookup
+- **List Command Tests** (`cmd/list_test.go`) - Tests listing functionality and categories
+- **Search Command Tests** (`cmd/search_test.go`) - Tests search command structure and helpers
+- **Display Tests** (`cmd/display_test.go`) - Tests Lipgloss styling functions
+- **HTTP Codes Tests** (`cmd/codes_test.go`) - Tests HTTP status code data integrity
+
 ## Dependencies
 
 - [Cobra](https://github.com/spf13/cobra) - CLI framework
