@@ -1,19 +1,9 @@
-# This is an example .goreleaser.yml file with some sensible defaults.
-# Make sure to check the documentation at https://goreleaser.com
-
-# The lines below are called `modelines`. See `:help modeline`
-# Feel free to remove those if you don't want/need to use them.
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
-# vim: set ts=2 sw=2 tw=0 fo=cnqoj
-
-version: 2
+project_name: httpcode
 
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
-    # you may remove this if you don't need go generate
-    - go generate ./...
+    - go test ./...
 
 builds:
   - env:
@@ -22,10 +12,17 @@ builds:
       - linux
       - windows
       - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
 
 archives:
-  - formats: [tar.gz]
-    # this name template makes the OS and Arch compatible with the results of `uname`.
+  - format: tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
@@ -33,21 +30,77 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    # use zip for windows archives
     format_overrides:
       - goos: windows
-        formats: [zip]
+        format: zip
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
 
 changelog:
   sort: asc
+  use: github
   filters:
     exclude:
-      - "^docs:"
-      - "^test:"
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - '^ci:'
+  groups:
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: 'Bug fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: 'Performance improvements'
+      regexp: '^.*?perf(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: Others
+      order: 999
 
 release:
-  footer: >-
+  github:
+    owner: lethang7794
+    name: httpcode
+  name_template: "Release {{.Tag}}"
+  header: |
+    ## 🚀 Release {{.Tag}}
+    
+    **HTTP Status Code Lookup Tool**
+    
+    A beautiful command-line tool for looking up HTTP status codes with interactive fuzzy search.
+  footer: |
+    ## 📦 Installation
+    
+    ### Download Binary
+    Download the appropriate binary for your platform from the assets above.
+    
+    ### Install with Go
+    ```bash
+    go install github.com/lethang7794/httpcode@{{.Tag}}
+    ```
+    
+    ### Verify Installation
+    ```bash
+    httpcode --help
+    httpcode version
+    httpcode 404
+    ```
+    
+    **Full Changelog**: https://github.com/lethang7794/httpcode/compare/{{.PreviousTag}}...{{.Tag}}
 
-    ---
-
-    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+brews:
+  - name: httpcode
+    repository:
+      owner: lethang7794
+      name: homebrew-tap
+    homepage: https://github.com/lethang7794/httpcode
+    description: "Beautiful HTTP status code lookup tool"
+    license: MIT
+    test: |
+      system "#{bin}/httpcode --help"
+      system "#{bin}/httpcode version"

@@ -126,20 +126,20 @@ httpcode list
 
 ## CI/CD and Releases
 
-The project uses GitHub Actions for continuous integration and automated releases:
+The project uses GitHub Actions for continuous integration and GoReleaser for automated releases:
 
 ### Workflows
 
-- **Test Workflow** (`.github/workflows/test.yml`) - Runs on every push and PR
+- **CI Workflow** (`.github/workflows/ci.yml`) - Runs on every push and PR
   - Tests on Go 1.19, 1.20, and 1.21
   - Generates coverage reports
-  - Builds binaries to verify compilation
+  - Uploads coverage to Codecov
 
-- **Release Workflow** (`.github/workflows/release.yml`) - Runs on main branch pushes
+- **Tag Workflow** (`.github/workflows/tag.yml`) - Runs on main branch pushes
+  - Runs tests before tagging
   - Automatically determines version bump based on commit messages
   - Creates semantic version tags
-  - Builds cross-platform binaries
-  - Creates GitHub releases with assets
+  - GoReleaser handles building and releasing
 
 ### Semantic Versioning
 
@@ -149,6 +149,14 @@ Version bumps are determined by commit message prefixes:
 - `fix:` or `bug:` → **Patch** version bump (bug fixes)
 - `breaking:` or `!:` → **Major** version bump (breaking changes)
 - `docs:`, `style:`, `refactor:`, `test:`, `chore:` → **Patch** version bump
+
+### Release Process
+
+1. **Commit with conventional message**: `feat: add new search feature`
+2. **Push to main**: Triggers tag workflow
+3. **Tests run**: Ensures code quality
+4. **Tag created**: Based on semantic versioning
+5. **GoReleaser triggered**: Builds and releases automatically
 
 ### Contributing
 
