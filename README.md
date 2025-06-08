@@ -133,14 +133,14 @@ The project uses a unified GitHub Actions workflow for continuous integration an
 - **CI/CD Pipeline** (`.github/workflows/ci-cd.yml`) - Single workflow handling everything
   - **On Pull Requests**: Runs tests only
   - **On Main Branch Push**: Full pipeline (test → tag → release)
-  - **Matrix Testing**: Go 1.19, 1.20, and 1.21
+  - **Go Version**: 1.23.0
   - **Coverage Reports**: Uploaded to Codecov
   - **GoReleaser Integration**: Automated building and releasing
 
 ### Pipeline Flow
 
 ```
-1. 🧪 Run Tests (parallel on 3 Go versions)
+1. 🧪 Run Tests (Go 1.23.0)
    ├─ If tests fail → Stop pipeline
    └─ If tests pass → Continue
 
@@ -171,7 +171,7 @@ Version bumps are determined by commit message prefixes:
 
 1. **Commit with conventional message**: `feat: add new search feature`
 2. **Push to main**: Triggers unified CI/CD pipeline
-3. **Tests run**: Ensures code quality across Go versions
+3. **Tests run**: Ensures code quality on Go 1.23.0
 4. **Tag created**: Based on semantic versioning (e.g., v1.1.0)
 5. **GoReleaser runs**: Builds and releases automatically
 

@@ -20,6 +20,8 @@ builds:
       - -X main.version={{.Version}}
       - -X main.commit={{.Commit}}
       - -X main.date={{.Date}}
+    main: .
+    binary: httpcode
 
 archives:
   - format: tar.gz
@@ -73,6 +75,8 @@ release:
     **HTTP Status Code Lookup Tool**
     
     A beautiful command-line tool for looking up HTTP status codes with interactive fuzzy search.
+    
+    Built with Go 1.23.0
   footer: |
     ## 📦 Installation
     

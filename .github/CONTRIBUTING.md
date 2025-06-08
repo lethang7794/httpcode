@@ -99,7 +99,7 @@ test: add tests for list command
 The project uses a unified GitHub Actions workflow:
 
 ### For Pull Requests
-- **Tests only**: Runs on Go 1.19, 1.20, 1.21
+- **Tests only**: Runs on Go 1.23.0
 - **Coverage**: Reports uploaded to Codecov
 - **Must pass**: Before merging
 
@@ -111,7 +111,7 @@ The project uses a unified GitHub Actions workflow:
 
 ### Pipeline Flow
 ```
-1. Tests run on multiple Go versions
+1. Tests run on Go 1.23.0
 2. If tests pass and on main branch:
    - Analyze commits for version bump
    - Create semantic version tag
