@@ -86,7 +86,7 @@ brews:
           name: homebrew-tap
           branch: main
     homepage: https://github.com/lethang7794/httpcode
-    description: "Beautiful HTTP status code lookup tool"
+    description: "Minimal HTTP status code lookup tool support fuzzy search"
     license: MIT
     test: |
       system "#{bin}/httpcode --help"
