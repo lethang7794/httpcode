@@ -68,11 +68,10 @@ release:
   github:
     owner: lethang7794
     name: httpcode
-  name_template: "Release {{.Tag}}"
-  header: |
-    ## 🚀 Release {{.Tag}}
-    **Full Changelog**: https://github.com/lethang7794/httpcode/compare/{{.PreviousTag}}...{{.Tag}}
+  name_template: "{{.Tag}}"
+  # header: | 
   footer: |
+    **Full Changelog**: https://github.com/lethang7794/httpcode/compare/{{.PreviousTag}}...{{.Tag}}
 
 brews:
   - name: httpcode
