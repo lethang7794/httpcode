@@ -1,15 +1,27 @@
-# HTTP Code CLI Tool
+![alt text](main-ui.png)
+
+# [httpcode](https://github.com/lethang7794/httpcode)
 
 A beautiful command-line tool for looking up HTTP status codes and their descriptions, built with Cobra and styled with Lipgloss.
-
-**Source Code**: [github.com/lethang7794/httpcode](https://github.com/lethang7794/httpcode)
 
 ## Features
 
 - ✨ **Beautiful Terminal UI** - Styled with [Lipgloss](https://github.com/charmbracelet/lipgloss) for a modern, colorful interface
 - 📋 **Comprehensive Database** - Complete HTTP status code information with detailed descriptions
 - 🔍 **Multiple Lookup Options** - Look up by code or browse by category
+
+  ![alt text](list.png)
+
 - 🎯 **Interactive Fuzzy Search** - Built-in fuzzy search with fzf integration and detailed preview
+
+  - By Status code
+
+    ![alt text](fuzzy-code.png)
+
+  - Or by message
+
+    ![alt text](fuzzy-message.png)
+
 - 🌈 **Color-Coded Categories** - Different colors for each HTTP status code category (1xx-5xx)
 - 📖 **MDN Documentation Links** - Direct links to official documentation for each status code
 
@@ -69,7 +81,8 @@ httpcode search          - Interactive fuzzy search with detailed preview
 httpcode help            - Show help message
 ```
 
-**Note**: Running `httpcode` without any arguments is equivalent to running `httpcode search` - both will launch the interactive fuzzy search interface.
+> [!NOTE]
+> Running `httpcode` without any arguments is equivalent to running `httpcode search` - both will launch the interactive fuzzy search interface.
 
 ## Beautiful Output
 
@@ -112,9 +125,18 @@ httpcode search
 The fuzzy search interface allows you to:
 
 - Type to filter HTTP status codes
-- Use arrow keys to navigate
-- Press Enter to select a code
 - View detailed information in the preview pane
+
+  ![alt text](filter-and-detail-preview.png)
+
+- Use arrow keys to navigate
+
+  ![alt text](navigate-in-filter.png)
+
+- Press Enter to select a code
+
+  ![alt text](select-a-code.png)
+
 - Press Ctrl+C or Esc to exit
 
 ## Shell Completion
@@ -218,7 +240,7 @@ Each release includes:
 
 ### Contributing
 
-See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for development setup and contribution guidelines.
+See [CONTRIBUTING.md](../.github/CONTRIBUTING.md) for development setup and contribution guidelines.
 
 ## Testing
 
@@ -265,4 +287,4 @@ chmod +x scripts/demo.sh
 
 ## License
 
-MIT
+[MIT](../LICENSE)
