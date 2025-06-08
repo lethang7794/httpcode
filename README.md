@@ -2,6 +2,8 @@
 
 A beautiful command-line tool for looking up HTTP status codes and their descriptions, built with Cobra and styled with Lipgloss.
 
+**Source Code**: [github.com/lethang7794/httpcode](https://github.com/lethang7794/httpcode)
+
 ## Features
 
 ✨ **Beautiful Terminal UI** - Styled with [Lipgloss](https://github.com/charmbracelet/lipgloss) for a modern, colorful interface
@@ -17,7 +19,7 @@ First, make sure you have Go installed on your system. Then, you can install the
 
 ```bash
 # Clone the repository
-git clone https://github.com/lqt/httpcode.git
+git clone https://github.com/lethang7794/httpcode.git
 cd httpcode
 
 # Build the binary
@@ -30,12 +32,15 @@ sudo mv httpcode /usr/local/bin/
 ## Usage
 
 ```
+httpcode                 - Interactive fuzzy search (equivalent to httpcode search)
 httpcode <code>          - Look up a specific HTTP status code
 httpcode list            - List all HTTP status codes
 httpcode list <category> - List codes by category (1xx, 2xx, 3xx, 4xx, 5xx)
 httpcode search          - Interactive fuzzy search with detailed preview
 httpcode help            - Show help message
 ```
+
+**Note**: Running `httpcode` without any arguments is equivalent to running `httpcode search` - both will launch the interactive fuzzy search interface.
 
 ## Beautiful Output
 
@@ -50,9 +55,9 @@ The tool uses Lipgloss to provide beautiful, color-coded output:
 Each status code is displayed with:
 - Styled header with code and description
 - Category badge
-- Detailed explanation in a bordered box
+- Detailed explanation in a clean format
 - Clickable MDN documentation link
-- Beautiful separators and formatting
+- Beautiful color coding and alignment
 
 ## Detailed Information
 
@@ -62,12 +67,14 @@ For each HTTP status code, the tool provides:
 - Link to MDN documentation
 - Color-coded category classification
 
-## Fuzzy Search
+## Interactive Search
 
 The tool includes built-in interactive fuzzy search functionality:
 
 ```bash
 # Interactive fuzzy search with detailed preview
+httpcode
+# or
 httpcode search
 ```
 
@@ -101,13 +108,16 @@ To install completions permanently, see the output of `httpcode completion --hel
 ## Examples
 
 ```bash
+# Interactive fuzzy search (default behavior)
+httpcode
+
 # Look up a specific status code with beautiful styling
 httpcode 404
 
 # List all 4xx (client error) status codes with color coding
 httpcode list 4xx
 
-# Interactive fuzzy search with preview
+# Interactive fuzzy search with preview (same as above)
 httpcode search
 
 # List all codes with beautiful category headers

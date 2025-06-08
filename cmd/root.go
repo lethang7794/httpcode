@@ -12,7 +12,9 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "httpcode [code]",
 	Short: "HTTP Status Code Lookup Tool",
-	Long: `A simple command-line tool for looking up HTTP status codes and their descriptions.
+	Long: `A beautiful command-line tool for looking up HTTP status codes and their descriptions.
+
+Running 'httpcode' without arguments launches the interactive fuzzy search.
 Complete documentation is available at https://github.com/lethang7794/httpcode`,
 	// This is important - it tells Cobra not to try to validate args against commands
 	Args:  cobra.ArbitraryArgs,

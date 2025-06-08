@@ -13,25 +13,26 @@ echo
 
 # Demo individual code lookup
 echo "📋 Looking up HTTP 404:"
-./httpcode 404
+httpcode 404
 echo
 
 echo "📋 Looking up HTTP 200:"
-./httpcode 200
+httpcode 200
 echo
 
 echo "📋 Looking up HTTP 500:"
-./httpcode 500
+httpcode 500
 echo
 
 # Demo list functionality
 echo "📋 Listing 4xx codes:"
-./httpcode list 4xx
+httpcode list 4xx
 echo
 
 # Demo fuzzy search functionality
-echo "📋 Fuzzy search available with:"
-echo "   ./httpcode search"
+echo "📋 Interactive fuzzy search available with:"
+echo "   httpcode"
+echo "   httpcode search"
 echo
 
 echo "✨ Demo complete! Your HTTP code tool now has beautiful styling with Lipgloss!"
