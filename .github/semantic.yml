@@ -1,0 +1,40 @@
+# Semantic versioning configuration
+# This file defines how commit messages map to version bumps
+
+# Version bump rules based on commit message patterns
+version_bumps:
+  major:
+    - "breaking change"
+    - "breaking:"
+    - "!:"
+    - "major:"
+    - "BREAKING CHANGE:"
+  
+  minor:
+    - "feat:"
+    - "feature:"
+    - "add:"
+    - "new:"
+    - "minor:"
+  
+  patch:
+    - "fix:"
+    - "bug:"
+    - "patch:"
+    - "update:"
+    - "improve:"
+    - "refactor:"
+    - "perf:"
+    - "docs:"
+    - "style:"
+    - "test:"
+    - "chore:"
+
+# Default bump type if no patterns match
+default_bump: patch
+
+# Commit message examples:
+# feat: add new search functionality -> minor bump
+# fix: resolve status code lookup issue -> patch bump  
+# breaking: change API structure -> major bump
+# docs: update README -> patch bump

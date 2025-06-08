@@ -124,6 +124,36 @@ httpcode search
 httpcode list
 ```
 
+## CI/CD and Releases
+
+The project uses GitHub Actions for continuous integration and automated releases:
+
+### Workflows
+
+- **Test Workflow** (`.github/workflows/test.yml`) - Runs on every push and PR
+  - Tests on Go 1.19, 1.20, and 1.21
+  - Generates coverage reports
+  - Builds binaries to verify compilation
+
+- **Release Workflow** (`.github/workflows/release.yml`) - Runs on main branch pushes
+  - Automatically determines version bump based on commit messages
+  - Creates semantic version tags
+  - Builds cross-platform binaries
+  - Creates GitHub releases with assets
+
+### Semantic Versioning
+
+Version bumps are determined by commit message prefixes:
+
+- `feat:` or `feature:` → **Minor** version bump (new features)
+- `fix:` or `bug:` → **Patch** version bump (bug fixes)
+- `breaking:` or `!:` → **Major** version bump (breaking changes)
+- `docs:`, `style:`, `refactor:`, `test:`, `chore:` → **Patch** version bump
+
+### Contributing
+
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for development setup and contribution guidelines.
+
 ## Testing
 
 The project includes comprehensive tests for all subcommands and functionality:

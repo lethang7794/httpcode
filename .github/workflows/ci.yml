@@ -1,14 +1,84 @@
-name: Release
+name: CI/CD Pipeline
 
 on:
   push:
+    branches: [ main, develop ]
+  pull_request:
     branches: [ main ]
 
 jobs:
-  release:
-    name: Create Release
+  test:
+    name: Test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    strategy:
+      matrix:
+        go-version: [1.19, 1.20, 1.21]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ matrix.go-version }}
+
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Download dependencies
+      run: go mod download
+
+    - name: Verify dependencies
+      run: go mod verify
+
+    - name: Run tests
+      run: go test -v -race -coverprofile=coverage.out ./...
+
+    - name: Generate coverage report
+      run: go tool cover -html=coverage.out -o coverage.html
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.out
+        flags: unittests
+        name: codecov-umbrella
+
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
+
+    - name: Build binary
+      run: |
+        go build -v -o httpcode .
+        ./httpcode --help
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
     - name: Checkout code
@@ -35,44 +105,30 @@ jobs:
         echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
         echo "Latest tag: $LATEST_TAG"
 
-    - name: Get commits since last tag
-      id: get_commits
+    - name: Determine version bump
+      id: version_bump
       run: |
+        # Analyze commit messages since last tag to determine version bump
         LATEST_TAG="${{ steps.get_tag.outputs.latest_tag }}"
         
         # Get commits since last tag
         if [ "$LATEST_TAG" = "v0.0.0" ]; then
           COMMITS=$(git log --pretty=format:"%s" HEAD)
-          COMMIT_COUNT=$(git rev-list --count HEAD)
         else
           COMMITS=$(git log --pretty=format:"%s" ${LATEST_TAG}..HEAD)
-          COMMIT_COUNT=$(git rev-list --count ${LATEST_TAG}..HEAD)
         fi
         
-        echo "commits<<EOF" >> $GITHUB_OUTPUT
-        echo "$COMMITS" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-        
-        echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
-        echo "Commits since last tag ($COMMIT_COUNT):"
+        echo "Commits since last tag:"
         echo "$COMMITS"
-
-    - name: Determine version bump
-      id: version_bump
-      run: |
-        COMMITS="${{ steps.get_commits.outputs.commits }}"
         
-        # Determine bump type based on conventional commits and keywords
+        # Determine bump type based on conventional commits
         BUMP_TYPE="patch"
         
-        # Check for breaking changes (major version bump)
-        if echo "$COMMITS" | grep -qiE "(breaking change|breaking:|!:|major:)"; then
+        if echo "$COMMITS" | grep -qE "^(feat|feature)(\(.+\))?!:|^.+!:|BREAKING CHANGE:"; then
           BUMP_TYPE="major"
-        # Check for new features (minor version bump)
-        elif echo "$COMMITS" | grep -qiE "(feat:|feature:|add:|new:|minor:)"; then
+        elif echo "$COMMITS" | grep -qE "^(feat|feature)(\(.+\))?:"; then
           BUMP_TYPE="minor"
-        # Default to patch for fixes, improvements, etc.
-        elif echo "$COMMITS" | grep -qiE "(fix:|bug:|patch:|update:|improve:|refactor:|perf:)"; then
+        elif echo "$COMMITS" | grep -qE "^(fix|bugfix|perf|refactor)(\(.+\))?:"; then
           BUMP_TYPE="patch"
         fi
         
@@ -114,26 +170,26 @@ jobs:
         echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
         echo "New version: $NEW_VERSION"
 
-    - name: Check if should create release
+    - name: Check if version should be bumped
       id: should_release
       run: |
-        COMMIT_COUNT="${{ steps.get_commits.outputs.commit_count }}"
         LATEST_TAG="${{ steps.get_tag.outputs.latest_tag }}"
         NEW_VERSION="${{ steps.new_version.outputs.new_version }}"
         
+        # Check if there are any commits since last tag
+        if [ "$LATEST_TAG" = "v0.0.0" ]; then
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+        else
+          COMMIT_COUNT=$(git rev-list --count ${LATEST_TAG}..HEAD)
+        fi
+        
         if [ "$COMMIT_COUNT" -gt 0 ] && [ "$NEW_VERSION" != "$LATEST_TAG" ]; then
           echo "should_release=true" >> $GITHUB_OUTPUT
-          echo "Will create release: $NEW_VERSION"
+          echo "Should create release: true"
         else
           echo "should_release=false" >> $GITHUB_OUTPUT
-          echo "No release needed"
+          echo "Should create release: false"
         fi
-
-    - name: Run tests before release
-      if: steps.should_release.outputs.should_release == 'true'
-      run: |
-        go mod download
-        go test -v ./...
 
     - name: Build release binaries
       if: steps.should_release.outputs.should_release == 'true'
@@ -141,17 +197,15 @@ jobs:
         mkdir -p dist
         
         # Build for multiple platforms
-        echo "Building binaries..."
-        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w -X main.version=${{ steps.new_version.outputs.new_version }}" -o dist/httpcode-linux-amd64 .
-        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w -X main.version=${{ steps.new_version.outputs.new_version }}" -o dist/httpcode-linux-arm64 .
-        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w -X main.version=${{ steps.new_version.outputs.new_version }}" -o dist/httpcode-darwin-amd64 .
-        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w -X main.version=${{ steps.new_version.outputs.new_version }}" -o dist/httpcode-darwin-arm64 .
-        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w -X main.version=${{ steps.new_version.outputs.new_version }}" -o dist/httpcode-windows-amd64.exe .
+        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o dist/httpcode-linux-amd64 .
+        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o dist/httpcode-linux-arm64 .
+        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o dist/httpcode-darwin-amd64 .
+        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o dist/httpcode-darwin-arm64 .
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o dist/httpcode-windows-amd64.exe .
         
         # Create checksums
         cd dist
         sha256sum * > checksums.txt
-        ls -la
         cd ..
 
     - name: Create and push tag
@@ -159,15 +213,10 @@ jobs:
       run: |
         NEW_VERSION="${{ steps.new_version.outputs.new_version }}"
         
-        # Create annotated tag with release notes
-        git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION
-
-        Bump type: ${{ steps.version_bump.outputs.bump_type }}
-        
-        Changes since last release:
-        ${{ steps.get_commits.outputs.commits }}"
-        
+        # Create annotated tag
+        git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
         git push origin "$NEW_VERSION"
+        
         echo "Created and pushed tag: $NEW_VERSION"
 
     - name: Create GitHub Release
@@ -177,41 +226,29 @@ jobs:
         tag_name: ${{ steps.new_version.outputs.new_version }}
         name: Release ${{ steps.new_version.outputs.new_version }}
         body: |
-          ## 🚀 Release ${{ steps.new_version.outputs.new_version }}
+          ## Changes
           
-          **Bump Type:** ${{ steps.version_bump.outputs.bump_type }}
+          This release includes the following changes since the last version:
           
-          ## 📋 Changes
+          ### Commits
+          ```
+          ${{ steps.version_bump.outputs.commits }}
+          ```
           
-          ${{ steps.get_commits.outputs.commits }}
-          
-          ## 📦 Installation
+          ## Installation
           
           ### Download Binary
           Download the appropriate binary for your platform from the assets below.
           
-          ### Install with Go
+          ### Build from Source
           ```bash
           go install github.com/lethang7794/httpcode@${{ steps.new_version.outputs.new_version }}
           ```
           
-          ### Build from Source
-          ```bash
-          git clone https://github.com/lethang7794/httpcode.git
-          cd httpcode
-          git checkout ${{ steps.new_version.outputs.new_version }}
-          go build -o httpcode .
-          ```
-          
-          ## ✅ Verify Installation
+          ### Verify Installation
           ```bash
           httpcode --help
-          httpcode 404
-          httpcode search
           ```
-          
-          ## 🔍 Checksums
-          See `checksums.txt` in the assets for file verification.
         files: |
           dist/*
         draft: false
