@@ -1,0 +1,6 @@
+# Local build artifact
+httpcode
+httpcode.exe
+
+# Added by goreleaser init:
+dist/
