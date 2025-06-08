@@ -7,8 +7,8 @@ import (
 // Version information - set by build flags
 var (
 	version = "dev"
-	commit  = "unknown"
-	date    = "unknown"
+	commit  = "N/A"
+	date    = "N/A"
 )
 
 func main() {
