@@ -79,6 +79,13 @@ brews:
     repository:
       owner: lethang7794
       name: homebrew-tap
+      branch: "{{.ProjectName}}-{{.Version}}"
+      pull_request:
+        enabled: true
+        base:
+          owner: mike
+          name: repo
+          branch: main
     homepage: https://github.com/lethang7794/httpcode
     description: "Beautiful HTTP status code lookup tool"
     license: MIT
