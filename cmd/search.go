@@ -76,12 +76,13 @@ func runFzfSearch() {
 
 		// Include all information for preview mode
 		// Escape special characters in the detail text
+		escapedDescription := escapeString(info.Description)
 		escapedDetail := escapeString(info.Detail)
 		escapedLink := escapeString(info.MDNLink)
 		
 		item := fmt.Sprintf("%d\t%s\t%s\t%s\t%s", 
 			code, 
-			info.Description, 
+			escapedDescription, 
 			category, 
 			escapedDetail, 
 			escapedLink)
@@ -123,7 +124,7 @@ func runFzfSearch() {
 	fzfArgs = append(fzfArgs, "--height=80%")
 	
 	// Add header
-	fzfArgs = append(fzfArgs, "--header=HTTP Status Codes (Press ESC to exit, Enter to select)")
+	fzfArgs = append(fzfArgs, "--header=Code    Message          (Press ESC to exit, Enter to select)")
 	
 	// Add header label with program information
 	fzfArgs = append(fzfArgs, "--border-label=httpcode - HTTP Status Code Viewer")
