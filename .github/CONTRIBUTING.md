@@ -19,7 +19,7 @@ Thank you for your interest in contributing to the HTTP Code CLI Tool! 🎉
    ```bash
    go test ./...
    # or use the test script
-   ./run_tests.sh
+   ./scripts/run_tests.sh
    ```
 
 4. **Build and test locally**

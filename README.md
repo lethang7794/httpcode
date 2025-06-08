@@ -232,8 +232,8 @@ go test ./cmd/...
 go test -cover ./cmd/...
 
 # Run the test suite with detailed output
-chmod +x run_tests.sh
-./run_tests.sh
+chmod +x scripts/run_tests.sh
+./scripts/run_tests.sh
 ```
 
 ### Test Coverage
@@ -255,8 +255,8 @@ chmod +x run_tests.sh
 Run the demo script to see the beautiful styling in action:
 
 ```bash
-chmod +x demo.sh
-./demo.sh
+chmod +x scripts/demo.sh
+./scripts/demo.sh
 ```
 
 ## Acknowledgments
