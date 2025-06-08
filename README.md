@@ -259,6 +259,10 @@ chmod +x demo.sh
 ./demo.sh
 ```
 
+## Acknowledgments
+
+**AI-Assisted Development**: Approximately 70% of this project was developed with the assistance of Amazon Q CLI using Claude 3.5 Sonnet. This includes code generation, testing, documentation, and CI/CD pipeline setup.
+
 ## License
 
 MIT
