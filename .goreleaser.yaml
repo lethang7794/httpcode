@@ -71,31 +71,8 @@ release:
   name_template: "Release {{.Tag}}"
   header: |
     ## 🚀 Release {{.Tag}}
-    
-    **HTTP Status Code Lookup Tool**
-    
-    A beautiful command-line tool for looking up HTTP status codes with interactive fuzzy search.
-    
-    Built with Go 1.23.0
-  footer: |
-    ## 📦 Installation
-    
-    ### Download Binary
-    Download the appropriate binary for your platform from the assets above.
-    
-    ### Install with Go
-    ```bash
-    go install github.com/lethang7794/httpcode@{{.Tag}}
-    ```
-    
-    ### Verify Installation
-    ```bash
-    httpcode --help
-    httpcode version
-    httpcode 404
-    ```
-    
     **Full Changelog**: https://github.com/lethang7794/httpcode/compare/{{.PreviousTag}}...{{.Tag}}
+  footer: |
 
 brews:
   - name: httpcode
