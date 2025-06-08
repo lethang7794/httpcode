@@ -53,6 +53,7 @@ The tool uses Lipgloss to provide beautiful, color-coded output:
 - 🟣 **5xx (Server Error)** - Purple styling
 
 Each status code is displayed with:
+
 - Styled header with code and description
 - Category badge
 - Detailed explanation in a clean format
@@ -62,6 +63,7 @@ Each status code is displayed with:
 ## Detailed Information
 
 For each HTTP status code, the tool provides:
+
 - Short description
 - Detailed explanation
 - Link to MDN documentation
@@ -79,6 +81,7 @@ httpcode search
 ```
 
 The fuzzy search interface allows you to:
+
 - Type to filter HTTP status codes
 - Use arrow keys to navigate
 - Press Enter to select a code
@@ -178,6 +181,7 @@ Version bumps are determined by commit message prefixes:
 ### Release Assets
 
 Each release includes:
+
 - Cross-platform binaries (Linux, macOS, Windows - amd64, arm64)
 - Archives (tar.gz, zip)
 - Checksums for verification
