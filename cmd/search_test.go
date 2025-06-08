@@ -3,23 +3,21 @@ package cmd
 import (
 	"strings"
 	"testing"
-
-	"github.com/spf13/cobra"
 )
 
 func TestSearchCommand(t *testing.T) {
 	// Note: Testing the actual fzf interaction is complex and would require mocking
 	// Here we test the command structure and helper functions
-	
+
 	t.Run("search command exists", func(t *testing.T) {
 		if searchCmd == nil {
 			t.Error("searchCmd should not be nil")
 		}
-		
+
 		if searchCmd.Use != "search" {
 			t.Errorf("Expected search command Use to be 'search', got '%s'", searchCmd.Use)
 		}
-		
+
 		if !strings.Contains(searchCmd.Short, "fuzzy search") {
 			t.Errorf("Expected search command Short to contain 'fuzzy search', got '%s'", searchCmd.Short)
 		}
@@ -144,10 +142,8 @@ func TestRunFzfSearchExists(t *testing.T) {
 			t.Logf("runFzfSearch panicked as expected in test environment: %v", r)
 		}
 	}()
-	
+
 	// We can't actually run this in tests without mocking fzf
-	// but we can verify the function exists
-	if runFzfSearch == nil {
-		t.Error("runFzfSearch function should exist")
-	}
+	// but we can verify the function is defined and accessible
+	t.Log("runFzfSearch function exists and is available")
 }

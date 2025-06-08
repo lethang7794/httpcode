@@ -71,12 +71,12 @@ func TestDisplayCodeWithLipgloss(t *testing.T) {
 				MDNLink:     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404",
 			},
 			wantContains: []string{
-				"HTTP 404:",
+				"HTTP 404",
 				"Not Found",
-				"Category:",
+				"Class:",
 				"Client Error",
 				"Description:",
-				"Documentation:",
+				"Docs:",
 			},
 		},
 		{
@@ -88,9 +88,9 @@ func TestDisplayCodeWithLipgloss(t *testing.T) {
 				MDNLink:     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200",
 			},
 			wantContains: []string{
-				"HTTP 200:",
+				"HTTP 200",
 				"OK",
-				"Category:",
+				"Class:",
 				"Success",
 			},
 		},
